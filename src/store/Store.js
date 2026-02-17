@@ -17,7 +17,7 @@ class Store {
     }
 
     getIdleCouriers() {
-        return this.couriers.filter(c => c.status === 'IDLE');
+        return this.couriers.filter(c => c.status === 'Free');
     }
 
     getOrderById(id) {
