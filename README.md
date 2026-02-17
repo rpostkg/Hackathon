@@ -1,7 +1,9 @@
-# Slopathon Stage 2
+# Slopathon Stage 3
 
 ## Tools used
 - Still Node.js
 
 ## Verification
-Run verify_stage2.js
+```
+npm run test
+```

@@ -7,7 +7,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "start": "node src/cli/index.js shell",
+    "test": "node verify_stage3.js"
   },
   "keywords": [],
   "dependencies": {
