@@ -15,21 +15,21 @@ program
 program
     .command('add-order')
     .description('Add a new order')
-    .argument('<px>', 'pickup X')
-    .argument('<py>', 'pickup Y')
+    .argument('<rx>', 'restaurant X')
+    .argument('<ry>', 'restaurant Y')
     .argument('<dx>', 'delivery X')
     .argument('<dy>', 'delivery Y')
-    .action((px, py, dx, dy) => {
-        const p = { x: parseFloat(px), y: parseFloat(py) };
+    .action((rx, ry, dx, dy) => {
+        const r = { x: parseFloat(rx), y: parseFloat(ry) };
         const d = { x: parseFloat(dx), y: parseFloat(dy) };
 
-        if (!GridService.validatePoint(p) || !GridService.validatePoint(d)) {
+        if (!GridService.validatePoint(r) || !GridService.validatePoint(d)) {
             console.error('Error: Coordinates must be between 0 and 100');
             return;
         }
 
         const id = `order-${store.orders.length + 1}`;
-        const order = new Order(id, p, d);
+        const order = new Order(id, r, d);
         store.addOrder(order);
         console.log(`Order ${id} added successfully.`);
     });
@@ -57,14 +57,12 @@ program
     .command('distribute')
     .description('Run order distribution logic')
     .action(() => {
-        const assignments = DistributionService.distribute();
-        if (assignments.length === 0) {
-            console.log('No assignments made.');
+        const result = DistributionService.distribute();
+        if (result.message) {
+            console.log(result.message);
         } else {
-            console.log('Assignments:');
-            assignments.forEach(a => {
-                console.log(`- Order ${a.orderId} assigned to Courier ${a.courierId} (Distance: ${a.distance.toFixed(2)})`);
-            });
+            console.log('Assignments (JSON):');
+            console.log(JSON.stringify(result, null, 2));
         }
     });
 
@@ -79,7 +77,7 @@ program
 
         console.log('\n--- Orders ---');
         store.orders.forEach(o => {
-            console.log(`${o.id}: Pickup(${o.pickup.x}, ${o.pickup.y}) -> Delivery(${o.delivery.x}, ${o.delivery.y}) - ${o.status}${o.assignedCourierId ? ' (assigned to ' + o.assignedCourierId + ')' : ''}`);
+            console.log(`${o.id}: Restaurant(${o.restaurant.x}, ${o.restaurant.y}) -> Delivery(${o.delivery.x}, ${o.delivery.y}) - ${o.status}${o.assignedCourierId ? ' (assigned to ' + o.assignedCourierId + ')' : ''}`);
         });
     });
 

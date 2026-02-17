@@ -6,26 +6,27 @@ import { CourierStatus } from '../models/Courier.js';
 export class DistributionService {
     static distribute() {
         const pendingOrders = store.getPendingOrders();
-        const idleCouriers = store.getIdleCouriers();
+        const freeCouriers = store.getIdleCouriers();
 
-        if (pendingOrders.length === 0 || idleCouriers.length === 0) {
-            return [];
+        if (pendingOrders.length === 0) {
+            return { message: 'No pending orders' };
+        }
+
+        if (freeCouriers.length === 0) {
+            return { message: 'No couriers available' };
         }
 
         const assignments = [];
 
-        // Simple greedy approach for Stage 0: 
-        // For each order, find the closest idle courier.
-        // In a real system we might want to optimize globally, but greedily is fine for initial requirements.
         for (const order of pendingOrders) {
-            const availableCouriers = idleCouriers.filter(c => c.status === CourierStatus.IDLE);
-            if (availableCouriers.length === 0) break;
+            const currentFreeCouriers = store.getIdleCouriers();
+            if (currentFreeCouriers.length === 0) break;
 
             let closestCourier = null;
             let minDistance = Infinity;
 
-            for (const courier of availableCouriers) {
-                const dist = GridService.calculateDistance(courier.location, order.pickup);
+            for (const courier of currentFreeCouriers) {
+                const dist = GridService.calculateDistance(courier.location, order.restaurant);
                 if (dist < minDistance) {
                     minDistance = dist;
                     closestCourier = courier;
@@ -37,12 +38,12 @@ export class DistributionService {
                 assignments.push({
                     orderId: order.id,
                     courierId: closestCourier.id,
-                    distance: minDistance
+                    distance: minDistance.toFixed(2)
                 });
             }
         }
 
-        return assignments;
+        return assignments.length > 0 ? assignments : { message: 'No couriers available' };
     }
 
     static assign(order, courier) {

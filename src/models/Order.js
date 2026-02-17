@@ -6,9 +6,9 @@ export const OrderStatus = {
 };
 
 export class Order {
-    constructor(id, pickup, delivery) {
+    constructor(id, restaurant, delivery) {
         this.id = id;
-        this.pickup = pickup; // { x, y }
+        this.restaurant = restaurant; // { x, y }
         this.delivery = delivery; // { x, y }
         this.status = OrderStatus.PENDING;
         this.assignedCourierId = null;
