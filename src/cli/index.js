@@ -19,9 +19,11 @@ program
     .argument('<ry>', 'restaurant Y')
     .argument('<dx>', 'delivery X')
     .argument('<dy>', 'delivery Y')
-    .action((rx, ry, dx, dy) => {
+    .argument('<weight>', 'order weight (kg)')
+    .action((rx, ry, dx, dy, weight) => {
         const r = { x: parseFloat(rx), y: parseFloat(ry) };
         const d = { x: parseFloat(dx), y: parseFloat(dy) };
+        const w = parseFloat(weight);
 
         if (!GridService.validatePoint(r) || !GridService.validatePoint(d)) {
             console.error('Error: Coordinates must be between 0 and 100');
@@ -29,9 +31,9 @@ program
         }
 
         const id = `order-${store.orders.length + 1}`;
-        const order = new Order(id, r, d);
+        const order = new Order(id, r, d, w);
         store.addOrder(order);
-        console.log(`Order ${id} added successfully.`);
+        console.log(`Order ${id} added successfully (Weight: ${w}kg).`);
     });
 
 program
@@ -39,7 +41,8 @@ program
     .description('Add a new courier')
     .argument('<x>', 'X coordinate')
     .argument('<y>', 'Y coordinate')
-    .action((x, y) => {
+    .argument('[type]', 'Transport type (Walker, Bicycle, Car)', 'Walker')
+    .action((x, y, type) => {
         const loc = { x: parseFloat(x), y: parseFloat(y) };
 
         if (!GridService.validatePoint(loc)) {
@@ -48,9 +51,9 @@ program
         }
 
         const id = `courier-${store.couriers.length + 1}`;
-        const courier = new Courier(id, loc);
+        const courier = new Courier(id, loc, type);
         store.addCourier(courier);
-        console.log(`Courier ${id} added successfully at (${loc.x}, ${loc.y}).`);
+        console.log(`Courier ${id} added successfully at (${loc.x}, ${loc.y}) with transport: ${type}.`);
     });
 
 program
@@ -72,12 +75,12 @@ program
     .action(() => {
         console.log('\n--- Couriers ---');
         store.couriers.forEach(c => {
-            console.log(`${c.id}: (${c.location.x}, ${c.location.y}) - ${c.status}`);
+            console.log(`${c.id}: (${c.location.x}, ${c.location.y}) [${c.transportType}] - ${c.status}`);
         });
 
         console.log('\n--- Orders ---');
         store.orders.forEach(o => {
-            console.log(`${o.id}: Restaurant(${o.restaurant.x}, ${o.restaurant.y}) -> Delivery(${o.delivery.x}, ${o.delivery.y}) - ${o.status}${o.assignedCourierId ? ' (assigned to ' + o.assignedCourierId + ')' : ''}`);
+            console.log(`${o.id}: Restaurant(${o.restaurant.x}, ${o.restaurant.y}) -> Delivery(${o.delivery.x}, ${o.delivery.y}) [${o.weight}kg] - ${o.status}${o.assignedCourierId ? ' (assigned to ' + o.assignedCourierId + ')' : ''}`);
         });
     });
 

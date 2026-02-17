@@ -20,12 +20,16 @@ export class DistributionService {
 
         for (const order of pendingOrders) {
             const currentFreeCouriers = store.getIdleCouriers();
-            if (currentFreeCouriers.length === 0) break;
+
+            // Filter suitable couriers based on weight capacity
+            const suitableCouriers = currentFreeCouriers.filter(c => c.capacity >= order.weight);
+
+            if (suitableCouriers.length === 0) continue;
 
             let closestCourier = null;
             let minDistance = Infinity;
 
-            for (const courier of currentFreeCouriers) {
+            for (const courier of suitableCouriers) {
                 const dist = GridService.calculateDistance(courier.location, order.restaurant);
                 if (dist < minDistance) {
                     minDistance = dist;
