@@ -2,3 +2,6 @@
 
 ## Tools used
 - Still Node.js
+
+## Verification
+Run verify_stage1.js
