@@ -70,12 +70,29 @@ program
     });
 
 program
+    .command('complete-order')
+    .description('Mark an order as completed/delivered')
+    .argument('<id>', 'Order ID')
+    .action((id) => {
+        const result = DistributionService.completeOrder(id);
+        if (!result) {
+            console.error('Error: Order not found or not in ASSIGNED status.');
+            return;
+        }
+        console.log(`Order ${id} completed by ${result.courier?.id}.`);
+        if (result.newAssignments && result.newAssignments.length > 0) {
+            console.log('New assignments from queue:');
+            console.log(JSON.stringify(result.newAssignments, null, 2));
+        }
+    });
+
+program
     .command('status')
     .description('Show current system status')
     .action(() => {
         console.log('\n--- Couriers ---');
         store.couriers.forEach(c => {
-            console.log(`${c.id}: (${c.location.x}, ${c.location.y}) [${c.transportType}] - ${c.status}`);
+            console.log(`${c.id}: (${c.location.x}, ${c.location.y}) [${c.transportType}] - ${c.status} (Completed: ${c.completedOrdersToday})`);
         });
 
         console.log('\n--- Orders ---');

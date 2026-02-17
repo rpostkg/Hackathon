@@ -21,6 +21,7 @@ export class Courier {
         this.location = location; // { x, y }
         this.transportType = transportType;
         this.status = CourierStatus.FREE;
+        this.completedOrdersToday = 0;
     }
 
     get capacity() {
