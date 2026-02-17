@@ -1,0 +1,16 @@
+{
+  "name": "hacka",
+  "version": "1.0.0",
+  "description": "2026",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [],
+  "dependencies": {
+    "commander": "^14.0.3"
+  }
+}
